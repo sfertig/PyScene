@@ -32,6 +32,8 @@ class _game:
             self.queue_creation = []
             self.queue_del = []
 
+            self.render_queue = []
+
             self.id = 0
 
     def _queue_add(self, obj): self.queue_creation.append(obj)
@@ -40,9 +42,13 @@ class _game:
         self.id += 1
         return self.id
 
+    def __update_render_queue(self): #update order of the renders based on z-index
+        self.render_queue = sorted(self.objects, key=lambda obj: obj.z_index)
+
     def __handle_queue(self):
         for obj in self.queue_creation: self.objects.append(obj)
         for obj in self.queue_del: self.objects.remove(obj)
+        if len(self.queue_creation) > 0 or len(self.queue_del) > 0: self.__update_render_queue()
         self.queue_creation = []
         self.queue_del = []
 
@@ -80,7 +86,7 @@ class _game:
 
         if _clear: self.screen.fill(self.bg)
         #render call
-        for obj in self.objects: obj.render(None)
+        for obj in self.render_queue: obj.render(None)
         #update screen
         pygame.display.flip()
 
