@@ -1,4 +1,5 @@
 import pygame
+from .Math import Vector2D
 
 class _keys:
     def __init__(self):
@@ -79,6 +80,17 @@ class _keys:
     def is_held(self, key):
         keys = pygame.key.get_pressed()
         return keys[key]
+
+    def get_axis(self, negative_action, positive_action) -> int: 
+        value = 0
+        if self.is_held(positive_action): value += 1
+        if self.is_held(negative_action): value -= 1
+        return value
+    def get_vector(self, neg_x, pos_x, neg_y, pos_y, normalise=True) -> Vector2D:
+        value =  Vector2D(self.get_axis(neg_x, pos_x), self.get_axis(neg_y, pos_y))
+        if normalise and value.length() > 1.0: 
+            value.normalize()
+        return value
 
     def _add_net(self, net): self.Net = net
 

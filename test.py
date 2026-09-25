@@ -3,14 +3,9 @@ import pygame
 
 Game.init(640, 360, "Test - 01", "darkblue")
 
-rect = pygame.Rect(100, 100, 100, 100)
+rect = Rect(0, 0, 100, 100, "green")
 
 while True:
-    Game.update(True)
-
-    if Keys.is_held(Keys.a): rect.x -= 5
-    if Keys.is_held(Keys.d): rect.x += 5
-
-    pygame.draw.rect(Game.screen, "red", rect)
-    
-    Game.render(False)
+    Game.update()
+    rect.pos += (Keys.get_vector(Keys.a, Keys.d, Keys.w, Keys.s)*200)*Game.dt
+    Game.render()

@@ -27,6 +27,25 @@ class _game:
 
             Keys._add_net(self) #to accsess events
 
+            #game obj info
+            self.objects = []
+            self.queue_creation = []
+            self.queue_del = []
+
+            self.id = 0
+
+    def _queue_add(self, obj): self.queue_creation.append(obj)
+    def _queue_remove(self, obj): self.queue_del.append(obj)
+    def _get_id(self):
+        self.id += 1
+        return self.id
+
+    def __handle_queue(self):
+        for obj in self.queue_creation: self.objects.append(obj)
+        for obj in self.queue_del: self.objects.remove(obj)
+        self.queue_creation = []
+        self.queue_del = []
+
     def __update(self):
         self.click = False
         self.dt = self.clock.tick(self.fps)/1000.0
@@ -46,6 +65,10 @@ class _game:
     def update(self, _clear=True):
         if not self.__on: return
         self.__update()
+        self.__handle_queue()
+
+        #update objs
+        for obj in self.objects: obj.update(self.dt, self.events)
 
         if _clear: self.clear_screen() #used if user is drawing objects themselves
         
@@ -57,7 +80,7 @@ class _game:
 
         if _clear: self.screen.fill(self.bg)
         #render call
-
+        for obj in self.objects: obj.render(None)
         #update screen
         pygame.display.flip()
 
