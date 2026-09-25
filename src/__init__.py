@@ -2,7 +2,7 @@
 
 from .Math import *
 from .Subscreen import *
-from .Game import Game
+from .Game import Game, Scene
 from .Keys import *
 
 from .objs import *
@@ -12,6 +12,7 @@ __all__ = [
     "Vector2D",
     "SubScreen",
     "Game",
+    "Scene",
     "Keys",
 
     "GameObj",
