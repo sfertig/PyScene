@@ -2,6 +2,7 @@ import pygame
 import sys
 
 from .Keys import Keys
+from .Math import Vector2D
 
 class _game:
     def __init__(self):
@@ -19,6 +20,7 @@ class _game:
             self.mouse_down = False
             self.click = False
             self.events = []
+            self.cam = Camera(self)
     
             #screen
             if not fullscreen: self.screen = pygame.display.set_mode((self.width, self.height))
@@ -97,11 +99,11 @@ class _game:
         if _clear: self.screen.fill(self.bg)
         #render call
         if self.active_scene is None: 
-            for obj in self.render_queue: obj.render(None)
+            for obj in self.render_queue: obj.render(self.cam)
         #render scene
         if self.active_scene is not None: 
-            self.active_scene.render(None)
-            self.active_scene._render(None)
+            self.active_scene.render(self.cam)
+            self.active_scene._render(self.cam)
         #update screen
         pygame.display.flip()
 
@@ -169,4 +171,16 @@ class Scene:
         self.queue_del = []
 
 Game: _game = _game()
+
+class Camera:
+    def __init__(self, game):
+        self.pos = Vector2D(0, 0)
+        self.game = game
+
+    #rendering helpers
+    def draw_rect(self, rect, color, width=0, offset=True):
+        r = rect.copy()
+        if offset: r.topleft = (r.x - self.pos.x, r.y - self.pos.y)
+        pygame.draw.rect(self.game.screen, color, r, width)
+
 

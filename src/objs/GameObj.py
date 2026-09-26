@@ -18,14 +18,16 @@ class GameObj: #this will be the base class of every game obj
     def destroy(self): Game._queue_remove(self)
 
 class Rect(GameObj): #test rect object
-    def __init__(self, x, y, w, h, color, z_index=0, active=True, visible=True):
+    def __init__(self, x, y, w, h, color, z_index=0, width=0, active=True, visible=True, offset=True):
         super().__init__(Vector2D(x, y), z_index, active, visible)
         self.dim = Vector2D(w, h)
         self.color = color
         self.rect = pygame.Rect((x, y), (w, h))
+        self.offset = offset
+        self.width = width
 
     def update(self, dt, events):
         if self.pos.to_int() != self.rect.topleft: self.rect.topleft = self.pos.to_int()
 
     def render(self, cam):
-        pygame.draw.rect(Game.screen, self.color, self.rect)
+        cam.draw_rect(self.rect, self.color, self.width, self.offset)
