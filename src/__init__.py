@@ -1,11 +1,13 @@
 #imports
 
 from .Math import *
-from .Subscreen import *
+from .utils.Subscreen import *
 from .Game import Game, Scene
 from .Keys import *
 
 from .objs import *
+from .utils import *
+
 
 #all
 __all__ = [
@@ -18,5 +20,9 @@ __all__ = [
     "GameObj",
     "Rect",
     "Circle",
-    "Line"
+    "Line",
+    "Text",
+    "Image",
+
+    "Assets",
 ]

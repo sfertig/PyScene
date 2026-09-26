@@ -193,4 +193,12 @@ class Camera:
             s -= self.pos
             e -= self.pos
         pygame.draw.line(self.game.screen, color, s.to_int(), e.to_int(), width)
+    def draw_text(self, surface, rect, offset=True):
+        r = rect.copy()
+        if offset: r.topleft = (r.x - self.pos.x, r.y - self.pos.y)
+        self.game.screen.blit(surface, r)
+    def draw_image(self, image, pos, offset=True):
+        p = pos.copy()
+        if offset: p -= self.pos
+        self.game.screen.blit(image, p.to_int())
 

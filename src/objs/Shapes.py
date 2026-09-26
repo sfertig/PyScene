@@ -17,6 +17,7 @@ class Rect(GameObj):
         if self.pos.to_int() != self.rect.topleft: self.rect.topleft = self.pos.to_int()
 
     def render(self, cam):
+        if not self.visible: return
         cam.draw_rect(self.rect, self.color, self.width, self.offset)
 
 class Circle(GameObj):
@@ -28,6 +29,7 @@ class Circle(GameObj):
         self.offset = offset
 
     def render(self, cam):
+        if not self.visible: return
         cam.draw_circle(self.pos, self.radius, self.color, self.width, self.offset)
 
 class Line(GameObj):
@@ -39,4 +41,5 @@ class Line(GameObj):
         self.offset = offset
 
     def render(self, cam): 
+        if not self.visible: return
         cam.draw_line(self.pos, self.end, self.color, self.width, self.offset)

@@ -1,6 +1,6 @@
 import pygame
 
-from .Math import Vector2D
+from ..Math import Vector2D
 
 
 class SubScreen:

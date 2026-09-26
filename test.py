@@ -4,17 +4,17 @@ import pygame
 
 Game.init(640, 360, "Test - 01", "darkblue", fullscreen=True)
 
+Assets.new_image("image", "tests/pause.png")
+
 class Player(GameObj):
     def __init__(self):
-        super().__init__(Vector2D(100, 100), 0)
-        self.rect = pygame.Rect((0, 0), (40, 40))
+        super().__init__(Vector2D(200, 200), 0)
+        self.rect = Image(Assets.get_image("image"))
 
     def update(self, dt, events):
         self.pos += (Keys.get_vector(Keys.left, Keys.right, Keys.up, Keys.down)*200)*Game.dt
-        self.rect.topleft = self.pos.to_int()
-
-    def render(self, cam):
-        cam.draw_rect(self.rect, "lightblue")
+        self.rect.pos = self.pos
+        if Keys.is_pressed(Keys.t): self.rect.visible = not self.rect.visible
 
 
 Player()
