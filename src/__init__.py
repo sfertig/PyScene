@@ -17,4 +17,6 @@ __all__ = [
 
     "GameObj",
     "Rect",
+    "Circle",
+    "Line"
 ]

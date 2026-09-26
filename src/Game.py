@@ -182,5 +182,15 @@ class Camera:
         r = rect.copy()
         if offset: r.topleft = (r.x - self.pos.x, r.y - self.pos.y)
         pygame.draw.rect(self.game.screen, color, r, width)
-
+    def draw_circle(self, pos, r, color, width=0, offset=True):
+        p = pos.copy()
+        if offset: p -= self.pos
+        pygame.draw.circle(self.game.screen, color, p.to_int(), r, width)
+    def draw_line(self, start, end, color, width=1, offset=True):
+        s = start.copy()
+        e = end.copy()
+        if offset:
+            s -= self.pos
+            e -= self.pos
+        pygame.draw.line(self.game.screen, color, s.to_int(), e.to_int(), width)
 

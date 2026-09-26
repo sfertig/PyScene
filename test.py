@@ -10,15 +10,17 @@ class Player(GameObj):
         self.rect = pygame.Rect((0, 0), (40, 40))
 
     def update(self, dt, events):
-        self.pos += (Keys.get_vector(Keys.a, Keys.d, Keys.w, Keys.s)*200)*Game.dt
+        self.pos += (Keys.get_vector(Keys.left, Keys.right, Keys.up, Keys.down)*200)*Game.dt
         self.rect.topleft = self.pos.to_int()
 
     def render(self, cam):
-        pygame.draw.rect(Game.screen, "green", self.rect)
+        cam.draw_rect(self.rect, "lightblue")
 
 
-#Player()
-Rect(100, 100, 40, 40, "green", 1)
+Player()
+Rect(100, 100, 40, 40, "green", 0)
+Circle(100, 100, 20, "yellow", 1)
+Line(100, 100, 140, 140, "red", 2)
 while True:
     if Keys.is_pressed(Keys.escape): Game.quit()
     Game.cam.pos += (Keys.get_vector(Keys.a, Keys.d, Keys.w, Keys.s)*200)*Game.dt
