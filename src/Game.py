@@ -7,38 +7,41 @@ from .Math import Vector2D
 class _game:
     def __init__(self):
         self.__on = False
+        pygame.init()
+        pygame.font.init()
 
     def init(self, width, height, title, bg="black", fps=60, fullscreen=False):
-            self.__on = True
-            self.width = width
-            self.height = height
-            self.title = title
-            self.bg = bg
-            self.fps = fps
-            self.clock = pygame.time.Clock()
-            self.dt = 0.0
-            self.mouse_down = False
-            self.click = False
-            self.events = []
-            self.cam = Camera(self)
-    
-            #screen
-            if not fullscreen: self.screen = pygame.display.set_mode((self.width, self.height))
-            else: self.screen = pygame.display.set_mode((width, height), pygame.SCALED | pygame.FULLSCREEN)
-            pygame.display.set_caption(self.title)
+        self.__on = True
+        self.width = width
+        self.height = height
+        self.title = title
+        self.bg = bg
+        self.fps = fps
+        self.clock = pygame.time.Clock()
+        self.dt = 0.0
+        self.mouse_down = False
+        self.click = False
+        self.events = []
+        self.cam = Camera(self)
 
-            Keys._add_net(self) #to accsess events
+        #screen
+        if not fullscreen: self.screen = pygame.display.set_mode((self.width, self.height))
+        else: self.screen = pygame.display.set_mode((width, height), pygame.SCALED | pygame.FULLSCREEN)
+        pygame.display.set_caption(self.title)
 
-            #game obj info
-            self.objects = []
-            self.queue_creation = []
-            self.queue_del = []
+        Keys._add_net(self) #to accsess events
 
-            self.render_queue = []
+        #game obj info
+        self.objects = []
+        self.queue_creation = []
+        self.queue_del = []
 
-            self.active_scene = None
-            self.scenes = {}
-            self.id = 0
+        self.render_queue = []
+
+        self.active_scene = None
+        self.scenes = {}
+        self.id = 0
+
 
     def _queue_add(self, obj): 
         if self.active_scene is None: self.queue_creation.append(obj)
@@ -119,6 +122,17 @@ class _game:
     def Tick(self):
         self.update()
         self.render()
+    def Run(self):
+        while True:
+            self.Tick()
+    def full_reset(self):
+        self.objects = []
+        self.queue_creation = []
+        self.queue_del = []
+        self.render_queue = []
+        self.scenes = {}
+        self.id = 0
+        self.active_scene = None
 
     def set_scene(self, scene=None):
         if self.active_scene is not None: self.active_scene.destroy()

@@ -14,7 +14,6 @@ class Player(GameObj):
     def update(self, dt, events):
         self.pos += (Keys.get_vector(Keys.left, Keys.right, Keys.up, Keys.down)*200)*Game.dt
         self.rect.pos = self.pos
-        if Keys.is_pressed(Keys.t): self.rect.visible = not self.rect.visible
 
 
 Player()

@@ -20,7 +20,7 @@ class Text(GameObj):
         """Internal method to re-render surface only when text changes."""
         self.surface = self.font.render(str(self.text), False, self.color)  # False for sharp pixel fonts!
         # Dynamically set rect based on alignment (topleft, center, topright, etc.)
-        self.rect = self.surface.get_rect(**{self.align: self.pos})
+        self.rect = self.surface.get_rect(**{self.align: self.pos.to_int()})
 
     def set_text(self, new_text, color=None):
         """Only call this when the string actually changes!"""
