@@ -42,7 +42,7 @@ class _game:
         if self.active_scene is None: self.queue_creation.append(obj)
         else: self.active_scene._queue_add(obj)
     def _queue_remove(self, obj): 
-        if self.active_scene is None: self.queue_del.append(obj)
+        if obj in self.objects: self.objects.remove(obj)
         else: self.active_scene._queue_remove(obj)
     def _get_id(self):
         self.id += 1
@@ -59,7 +59,6 @@ class _game:
         self.queue_del = []
 
     def __update(self):
-        self._obj_changed_layer = False
         self.click = False
         self.dt = self.clock.tick(self.fps)/1000.0
         self.events = pygame.event.get()
@@ -97,7 +96,8 @@ class _game:
 
         if _clear: self.screen.fill(self.bg)
         #render call
-        for obj in self.render_queue: obj.render(None)
+        if self.active_scene is None: 
+            for obj in self.render_queue: obj.render(None)
         #render scene
         if self.active_scene is not None: 
             self.active_scene.render(None)
@@ -114,7 +114,12 @@ class _game:
         self.title = title
         pygame.display.set_caption(self.title)
 
+    def Tick(self):
+        self.update()
+        self.render()
+
     def set_scene(self, scene=None):
+        if self.active_scene is not None: self.active_scene.destroy()
         self.active_scene = self.scenes.get(scene, None)
         if self.active_scene: self.active_scene.on_change()
 
@@ -124,32 +129,42 @@ class Scene:
         self.name = name
         Game.scenes[name] = self
         self._objects = []
-        self._queue_creation = []
-        self._queue_del = []
         self._render_queue = []
         self.queue_creation = []
         self.queue_del = []
+        Game.set_scene(name)
 
     def on_change(self): pass
 
     def update(self, dt, events): pass #user defined
     def _update(self, dt, events): #built in method
         self.__handle_queue()
-        self._obj_changed_layer = False
         for obj in self._objects: obj.update(dt, events)
 
     def render(self, cam): pass #user defined
     def _render(self, cam): #built in method
+        #update render queue based on global objects
+        _length = len(self._objects)+len(Game.objects)
+        if _length != len(self._render_queue): self.__update_render_queue()
+        #render
         for obj in self._render_queue: obj.render(cam)
 
     def _queue_add(self, obj): self.queue_creation.append(obj)
     def _queue_remove(self, obj): self.queue_del.append(obj)
-    def __update_render_queue(self): #update order of the renders based on z-index
-        self.render_queue = sorted(self.objects, key=lambda obj: obj.z_index)
+    def __update_render_queue(self):
+        objs = self._objects + Game.objects
+        self._render_queue = sorted(objs, key=lambda obj: obj.z_index)
     def __handle_queue(self):
-        for obj in self.queue_creation: self.objects.append(obj)
-        for obj in self.queue_del: self.objects.remove(obj)
+        for obj in self.queue_creation: self._objects.append(obj)
+        for obj in self.queue_del: self._objects.remove(obj)
         if len(self.queue_creation) > 0 or len(self.queue_del) > 0: self.__update_render_queue()
+        self.queue_creation = []
+        self.queue_del = []
+
+    def destroy(self):
+        for obj in self._objects: obj.destroy()
+        self._objects = []
+        self._render_queue = []
         self.queue_creation = []
         self.queue_del = []
 
