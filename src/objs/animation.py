@@ -1,9 +1,12 @@
 import pygame
 
 from ..Math import Vector2D
+from .GameObj import GameObj
 
-class Animation:
-    def __init__(self, image: pygame.Surface, size: int, fps: float, loop:bool=True):
+class Animation(GameObj):
+    def __init__(self, image, size, fps, loop=True, pos=Vector2D(0, 0), z_index=0, active=True, visible=True, offset=True):
+        super().__init__(pos, z_index, active, visible)
+        self.offset = offset
         self.image = image
         self.size = size
         self.fps = fps
@@ -13,7 +16,7 @@ class Animation:
         self.done=False
 
         # Automatically calculate frames based on image width
-        total_frames = image.get_width() // size
+        total_frames = int(image.get_width() // size)
 
         img_rect = image.get_rect()
         
@@ -26,12 +29,11 @@ class Animation:
 
     def last_frame(self):
         return int(self.index) >= (len(self.images) - 1)
-
     def reset(self):
         self.index = 0
         self.done = False
 
-    def update(self, dt: float):
+    def update(self, dt: float, events):
         if self.done:
             return
 
@@ -61,18 +63,28 @@ class Animation:
 
     def copy(self):
         return Animation(self.image, self.size, self.fps, self.loop)
+    def render(self, cam):
+        if not self.visible: return
+        cam.draw_image(self.get_image(), self.pos, self.offset)
 
-class AnimationManager:
-    def __init__(self, animations: dict[str, Animation], current_anim=None):
+class AnimationManager(GameObj):
+    def __init__(self, animations: dict[str, Animation], current_anim=None, z_index=0, active=True, visible=True, offset=True):
+        super().__init__(Vector2D(0, 0), z_index, active, visible)
         self.animations = animations
         self.current_anim = current_anim
 
+        for anim in self.animations:
+            anim.destroy() #remove from global or scene calls
+
     def new_anim(self, name, anim):
         self.animations[name] = anim
+        anim.destroy()
 
     def new_anim_set(self, anims: dict[str, Animation]):
         #add new anims to existing ones
         self.animations.update(anims)
+        for anim in anims:
+            anims[anim].destroy()
 
     def flip_v(self):
         for name in self.animations:
@@ -97,3 +109,7 @@ class AnimationManager:
         if self.current_anim is None and self.current_anim in self.animations:
             return
         return self.animations[self.current_anim]
+
+    def render(self, cam):
+        if not self.visible: return
+        self.get_animation().render(cam)
