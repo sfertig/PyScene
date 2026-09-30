@@ -3,6 +3,7 @@ import sys
 
 from .Keys import Keys
 from .Math import Vector2D
+from .Collisions import _coll_gen_combination
 
 class _game:
     def __init__(self):
@@ -36,6 +37,12 @@ class _game:
         self.queue_creation = []
         self.queue_del = []
 
+        self.collisions: list[pygame.Rect] = [] #accual list of rects
+        self.col = []
+        self.queue_creation_coll = []
+        self.queue_del_coll = []
+        self._update_coll = False
+
         self.render_queue = []
 
         self.active_scene = None
@@ -53,6 +60,9 @@ class _game:
         self.id += 1
         return self.id
 
+    def _queue_add_coll(self, obj): self.queue_creation_coll.append(obj)
+    def _queue_remove_coll(self, obj): self.queue_del_coll.append(obj)
+
     def __update_render_queue(self): #update order of the renders based on z-index
         self.render_queue = sorted(self.objects, key=lambda obj: obj.z_index)
 
@@ -60,8 +70,15 @@ class _game:
         for obj in self.queue_creation: self.objects.append(obj)
         for obj in self.queue_del: self.objects.remove(obj)
         if len(self.queue_creation) > 0 or len(self.queue_del) > 0: self.__update_render_queue()
-        self.queue_creation = []
-        self.queue_del = []
+        self.queue_creation.clear()
+        self.queue_del.clear()
+        #collisions
+        for obj in self.queue_creation_coll: self.col.append(obj)
+        for obj in self.queue_del_coll: self.col.remove(obj)
+        self.queue_creation_coll.clear()
+        self.queue_del_coll.clear()
+        _coll_gen_combination(self)
+        self._update_coll = False
 
     def __update(self):
         self.click = False
@@ -85,11 +102,11 @@ class _game:
         self.__handle_queue()
 
         #update objs
-        for obj in self.objects: obj.update(self.dt, self.events)
+        for obj in self.objects: obj.update()
         #update scene
         if self.active_scene is not None: 
-            self.active_scene.update(self.dt, self.events)
-            self.active_scene._update(self.dt, self.events)
+            self.active_scene.update()
+            self.active_scene._update()
 
         if _clear: self.clear_screen() #used if user is drawing objects themselves
         
@@ -104,7 +121,7 @@ class _game:
         if self.active_scene is None: 
             for obj in self.render_queue: obj.render(self.cam)
         #render scene
-        if self.active_scene is not None: 
+        else: 
             self.active_scene.render(self.cam)
             self.active_scene._render(self.cam)
         #update screen
@@ -122,9 +139,10 @@ class _game:
     def Tick(self):
         self.update()
         self.render()
-    def Run(self):
+    def Run(self, _esc=False):
         while True:
             self.Tick()
+            if _esc and Keys.is_pressed(pygame.K_ESCAPE): self.quit()
     def full_reset(self):
         self.objects = []
         self.queue_creation = []
@@ -133,9 +151,17 @@ class _game:
         self.scenes = {}
         self.id = 0
         self.active_scene = None
+        self._clear_all_collisions_()
+    def _clear_all_collisions_(self):
+        self.collisions = []
+        self.col = []
+        self.queue_creation_coll = []
+        self.queue_del_coll = []
+        self._update_coll = False
 
     def set_scene(self, scene=None):
         if self.active_scene is not None: self.active_scene.destroy()
+        self._clear_all_collisions_()
         self.active_scene = self.scenes.get(scene, None)
         if self.active_scene: self.active_scene.on_change()
 
@@ -152,10 +178,10 @@ class Scene:
 
     def on_change(self): pass
 
-    def update(self, dt, events): pass #user defined
-    def _update(self, dt, events): #built in method
+    def update(self): pass #user defined
+    def _update(self): #built in method
         self.__handle_queue()
-        for obj in self._objects: obj.update(dt, events)
+        for obj in self._objects: obj.update()
 
     def render(self, cam): pass #user defined
     def _render(self, cam): #built in method
@@ -215,4 +241,34 @@ class Camera:
         p = pos.copy()
         if offset: p -= self.pos
         self.game.screen.blit(image, p.to_int())
+
+def handle_collision(self, dim:Vector2D) -> dict:
+    """self must have a rect() method"""
+    returns = {"on_floor": False, "on_wall": False}
+
+    # 1. Horizontal Collisions
+    self.pos.x += self.vel.x * Game.dt
+    player_rect = pygame.Rect(self.pos.to_int(), dim.to_int())
+    for rect in Game.collisions:
+        if player_rect.colliderect(rect):
+            returns["on_wall"] = True
+            self.pos.x -= self.vel.x * Game.dt
+            self.vel.x = 0
+            break 
+
+    # 2. Vertical Collisions
+    self.pos.y += self.vel.y * Game.dt
+    player_rect = pygame.Rect(self.pos.to_int(), dim.to_int())
+    for rect in Game.collisions:
+        if player_rect.colliderect(rect):
+            # Step back first
+            self.pos.y -= self.vel.y * Game.dt
+
+            if self.vel.y > 0 and player_rect.bottom >= rect.top and player_rect.top < rect.top:
+                returns["on_floor"] = True
+                
+            self.vel.y = 0
+            break
+
+    return returns
 

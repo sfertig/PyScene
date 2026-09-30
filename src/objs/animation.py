@@ -2,6 +2,7 @@ import pygame
 
 from ..Math import Vector2D
 from .GameObj import GameObj
+from ..Game import Game
 
 class Animation(GameObj):
     def __init__(self, image, size, fps, loop=True, pos=Vector2D(0, 0), z_index=0, active=True, visible=True, offset=True):
@@ -33,11 +34,11 @@ class Animation(GameObj):
         self.index = 0
         self.done = False
 
-    def update(self, dt: float, events):
+    def update(self):
         if self.done:
             return
 
-        self.index += self.fps * dt
+        self.index += self.fps * Game.dt
         
         if self.index >= len(self.images):
             if self.loop:
@@ -97,10 +98,10 @@ class AnimationManager(GameObj):
     def change_anim(self, name):
         self.current_anim = name
 
-    def update(self, dt: float):
+    def update(self):
         if self.current_anim is None and self.current_anim in self.animations:
             return
-        self.animations[self.current_anim].update(dt)
+        self.animations[self.current_anim].update(Game.dt)
     def get_image(self) -> pygame.Surface:
         if self.current_anim is None and self.current_anim in self.animations:
             return

@@ -1,10 +1,10 @@
 #imports
 
+from .Game import Game, Scene, handle_collision
 from .Math import *
 from .utils.Subscreen import *
-from .Game import Game, Scene
-from .Keys import *
 
+from .Keys import *
 from .objs import *
 from .utils import *
 
@@ -24,5 +24,8 @@ __all__ = [
     "Text",
     "Image",
 
+    "StaticCollisionRect",
+
     "Assets",
+    "handle_collision"
 ]

@@ -13,7 +13,7 @@ class Rect(GameObj):
         self.offset = offset
         self.width = width
 
-    def update(self, dt, events):
+    def update(self):
         if self.pos.to_int() != self.rect.topleft: self.rect.topleft = self.pos.to_int()
 
     def render(self, cam):
