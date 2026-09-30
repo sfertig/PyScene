@@ -24,6 +24,7 @@ class _game:
         self.click = False
         self.events = []
         self.cam = Camera(self)
+        self.show_collisions: bool = False
 
         #screen
         if not fullscreen: self.screen = pygame.display.set_mode((self.width, self.height))
@@ -42,6 +43,10 @@ class _game:
         self.queue_creation_coll = []
         self.queue_del_coll = []
         self._update_coll = False
+
+        self.dynamic_col = []
+        self.queue_creation_D_coll = []
+        self.queue_del_D_coll = []
 
         self.render_queue = []
 
@@ -62,6 +67,8 @@ class _game:
 
     def _queue_add_coll(self, obj): self.queue_creation_coll.append(obj)
     def _queue_remove_coll(self, obj): self.queue_del_coll.append(obj)
+    def _queue_add_D_coll(self, obj): self.queue_creation_D_coll.append(obj)
+    def _queue_remove_D_coll(self, obj): self.queue_del_D_coll.append(obj)
 
     def __update_render_queue(self): #update order of the renders based on z-index
         self.render_queue = sorted(self.objects, key=lambda obj: obj.z_index)
@@ -77,6 +84,10 @@ class _game:
         for obj in self.queue_del_coll: self.col.remove(obj)
         self.queue_creation_coll.clear()
         self.queue_del_coll.clear()
+        for obj in self.queue_creation_D_coll: self.dynamic_col.append(obj)
+        for obj in self.queue_del_D_coll: self.dynamic_col.remove(obj)
+        self.queue_creation_D_coll.clear()
+        self.queue_del_D_coll.clear()
         _coll_gen_combination(self)
         self._update_coll = False
 
@@ -84,6 +95,8 @@ class _game:
         self.click = False
         self.dt = self.clock.tick(self.fps)/1000.0
         self.events = pygame.event.get()
+
+        for obj in self.dynamic_col: obj.update()
         
         for event in self.events:
             if event.type == pygame.QUIT:
@@ -124,8 +137,13 @@ class _game:
         else: 
             self.active_scene.render(self.cam)
             self.active_scene._render(self.cam)
+        if self.show_collisions: self.__render_collisions()
         #update screen
         pygame.display.flip()
+
+    def __render_collisions(self):
+        for coll in self.collisions:
+            pygame.draw.rect(self.screen, "yellow", coll, 2)
 
     def quit(self):
         self.__on = False
@@ -242,14 +260,15 @@ class Camera:
         if offset: p -= self.pos
         self.game.screen.blit(image, p.to_int())
 
-def handle_collision(self, dim:Vector2D) -> dict:
-    """self must have a rect() method"""
+def handle_collision(self, dim: Vector2D, Rect=None, ignore_self=True) -> dict:
     returns = {"on_floor": False, "on_wall": False}
 
     # 1. Horizontal Collisions
     self.pos.x += self.vel.x * Game.dt
     player_rect = pygame.Rect(self.pos.to_int(), dim.to_int())
     for rect in Game.collisions:
+        if ignore_self and Rect is not None: 
+            if rect == Rect: continue
         if player_rect.colliderect(rect):
             returns["on_wall"] = True
             self.pos.x -= self.vel.x * Game.dt
@@ -260,6 +279,8 @@ def handle_collision(self, dim:Vector2D) -> dict:
     self.pos.y += self.vel.y * Game.dt
     player_rect = pygame.Rect(self.pos.to_int(), dim.to_int())
     for rect in Game.collisions:
+        if ignore_self and Rect is not None: 
+            if rect == Rect: continue
         if player_rect.colliderect(rect):
             # Step back first
             self.pos.y -= self.vel.y * Game.dt

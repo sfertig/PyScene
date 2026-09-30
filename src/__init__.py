@@ -25,6 +25,7 @@ __all__ = [
     "Image",
 
     "StaticCollisionRect",
+    "DynamicCollisionRect",
 
     "Assets",
     "handle_collision"
