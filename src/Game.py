@@ -24,7 +24,9 @@ class _game:
         self.click = False
         self.events = []
         self.cam = Camera(self)
+
         self.show_collisions: bool = False
+        self.optimize_static_colliders: bool = False
 
         #screen
         if not fullscreen: self.screen = pygame.display.set_mode((self.width, self.height))

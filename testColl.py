@@ -3,10 +3,11 @@ import pygame
 
 Game.init(640, 360, "Test - 02: Collisions", "black")
 Game.show_collisions = True
+Game.optimize_static_colliders = True
 
 class Player(GameObj):
     def __init__(self):
-        super().__init__(Vector2D(0, 0))
+        super().__init__(Vector2D(200, 0))
         self.coll = DynamicCollisionRect(*self.pos.to_int(), 25, 25)
 
     def update(self):
@@ -26,17 +27,13 @@ class TestDynamic(GameObj):
             self.vel.x *= -1
             self.timer = 0.0
         self.coll.vel = self.vel.copy()
-        print(self.vel.x, self.timer)
 
-        if Keys.is_pressed(Keys.space): self.coll.set_active(not self.coll.active)
-
-
+StaticCollisionRect(0, 0, 50, 100, True)
 StaticCollisionRect(0, 100, 50, 50, True)
 StaticCollisionRect(250, 100, 50, 50, True)
+StaticCollisionRect(300, 100, 50, 50, True)
 TestDynamic()
 
 Player()
-while True:
-    Game.Tick()
-    if Keys.is_pressed(pygame.K_ESCAPE): Game.quit()
+Game.Run(True)
 
