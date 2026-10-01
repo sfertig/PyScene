@@ -1,6 +1,6 @@
 #imports
 "PyScene is a custom python + pygame framework / engine developed to streamline 2d game development."
-"Version: 1.0.0"
+"Version: 1.0.1"
 
 from .Game import Game, Scene, handle_collision
 from .Math import *
@@ -14,6 +14,7 @@ from .utils import *
 #all
 __all__ = [
     "Vector2D",
+    "clamp",
     "SubScreen",
     "Game",
     "Scene",
