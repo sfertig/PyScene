@@ -183,7 +183,7 @@ class _game:
         if self.active_scene is not None: self.active_scene.destroy()
         self._clear_all_collisions_()
         self.active_scene = self.scenes.get(scene, None)
-        if self.active_scene: self.active_scene.__init__()
+        if self.active_scene: self.active_scene.on_change()
 
 
 class Scene:
@@ -194,7 +194,7 @@ class Scene:
         self._render_queue = []
         self.queue_creation = []
         self.queue_del = []
-        Game.set_scene(name)
+        Game.scenes[name] = self
 
     def on_change(self): pass
 

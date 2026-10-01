@@ -3,7 +3,7 @@ requires = ["hatchling >= 1.26"]
 build-backend = "hatchling.build"
 [project]
 name = "PyScene"
-version = "1.0.3"
+version = "1.0.4"
 authors = [
   { name="Sam Fertig", email="sfertig007@gmail.com" },
 ]
