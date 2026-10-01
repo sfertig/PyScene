@@ -183,7 +183,7 @@ class _game:
         if self.active_scene is not None: self.active_scene.destroy()
         self._clear_all_collisions_()
         self.active_scene = self.scenes.get(scene, None)
-        if self.active_scene: self.active_scene.on_change()
+        if self.active_scene: self.active_scene.__init__()
 
 
 class Scene:
