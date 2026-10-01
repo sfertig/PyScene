@@ -194,7 +194,8 @@ class Scene:
         self._render_queue = []
         self.queue_creation = []
         self.queue_del = []
-        Game.scenes[name] = self
+        Game.scenes[name] = self.__class__
+        Game.set_scene(name)
 
     def on_change(self): pass
 
