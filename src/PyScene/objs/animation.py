@@ -5,8 +5,8 @@ from .GameObj import GameObj
 from ..Game import Game
 
 class Animation(GameObj):
-    def __init__(self, image, size, fps, loop=True, pos=Vector2D(0, 0), z_index=0, active=True, visible=True, offset=True):
-        super().__init__(pos, z_index, active, visible)
+    def __init__(self, image, size, fps, loop=True, pos=Vector2D(0, 0), z_index=0, active=True, visible=True, offset=True, Global=False):
+        super().__init__(pos, z_index, active, visible, Global)
         self.offset = offset
         self.image = image
         self.size = size
@@ -64,13 +64,13 @@ class Animation(GameObj):
 
     def copy(self):
         return Animation(self.image, self.size, self.fps, self.loop)
-    def render(self, cam):
+    def render(self):
         if not self.visible: return
-        cam.draw_image(self.get_image(), self.pos, self.offset)
+        Game.cam.draw_image(self.get_image(), self.pos, self.offset)
 
 class AnimationManager(GameObj):
-    def __init__(self, animations: dict[str, Animation], current_anim=None, z_index=0, active=True, visible=True, offset=True):
-        super().__init__(Vector2D(0, 0), z_index, active, visible)
+    def __init__(self, animations: dict[str, Animation], current_anim=None, z_index=0, active=True, visible=True, offset=True, Global=False):
+        super().__init__(Vector2D(0, 0), z_index, active, visible, Global)
         self.animations = animations
         self.current_anim = current_anim
 
@@ -111,6 +111,6 @@ class AnimationManager(GameObj):
             return
         return self.animations[self.current_anim]
 
-    def render(self, cam):
+    def render(self):
         if not self.visible: return
-        self.get_animation().render(cam)
+        self.get_animation().render()

@@ -4,8 +4,8 @@ from .GameObj import GameObj
 import pygame
 
 class Text(GameObj):
-    def __init__(self, font, text, color, pos=Vector2D(0, 0), align="center", z_index=0, active=True, visible=True, offset=True):
-        super().__init__(pos, z_index, active, visible)
+    def __init__(self, font, text, color, pos=Vector2D(0, 0), align="center", z_index=0, active=True, visible=True, offset=True, Global=False):
+        super().__init__(pos, z_index, active, visible, Global)
         self.font = font
         self.text = text
         self.color = color
@@ -34,17 +34,17 @@ class Text(GameObj):
         self.pos = new_pos
         self.rect = self.surface.get_rect(**{self.align: self.pos})
 
-    def render(self, cam):
+    def render(self):
         if not self.visible: return
-        cam.draw_text(self.surface, self.rect, self.offset)
+        Game.cam.draw_text(self.surface, self.rect, self.offset)
 
 class Image(GameObj):
-    def __init__(self, image, pos=Vector2D(0, 0), z_index=0, active=True, visible=True, offset=True):
-        super().__init__(pos, z_index, active, visible)
+    def __init__(self, image, pos=Vector2D(0, 0), z_index=0, active=True, visible=True, offset=True, Global=False):
+        super().__init__(pos, z_index, active, visible, Global)
         self.image = image
         self.offset = offset
 
-    def render(self, cam):
+    def render(self):
         if not self.visible: return
-        cam.draw_image(self.image, self.pos, self.offset)
+        Game.cam.draw_image(self.image, self.pos, self.offset)
 

@@ -84,13 +84,13 @@ class _assets:
     def new_font(self, name, path, size):
         self.fonts[name] = pygame.font.Font(path, size)
 
-    def new_animation(self, name, image, size=16, fps=3, loop=True, pos=Vector2D(0, 0), z_index=0, active=True, visible=True, offset=True):
-        self.animations[name] = Animation(image, size, fps, loop, pos, z_index, active, visible, offset)
-    def new_anim_nIMG(self, name, size=16, fps=3, path=None, rect=None, scale=1.0, colorKey=(0, 0, 0), sWidth=None, sHeight=None, loop=True, pos=Vector2D(0, 0), z_index=0, active=True, visible=True, offset=True):
+    def new_animation(self, name, image, size=16, fps=3, loop=True, pos=Vector2D(0, 0), z_index=0, active=True, visible=True, offset=True, Global=False):
+        self.animations[name] = Animation(image, size, fps, loop, pos, z_index, active, visible, offset, Global)
+    def new_anim_nIMG(self, name, size=16, fps=3, path=None, rect=None, scale=1.0, colorKey=(0, 0, 0), sWidth=None, sHeight=None, loop=True, pos=Vector2D(0, 0), z_index=0, active=True, visible=True, offset=True, Global=False):
         #create image
         self.new_image(name, path, rect, scale, colorKey, sWidth, sHeight)
         #create animation
-        self.new_animation(name, self.images[name], size*scale, fps, loop, pos, z_index, active, visible, offset)
+        self.new_animation(name, self.images[name], size*scale, fps, loop, pos, z_index, active, visible, offset, Global)
 
     def new_sound(self, name, path):
         self.sounds[name] = pygame.mixer.Sound(path)

@@ -134,11 +134,11 @@ class _game:
         if _clear: self.screen.fill(self.bg)
         #render call
         if self.active_scene is None: 
-            for obj in self.render_queue: obj.render(self.cam)
+            for obj in self.render_queue: obj.render()
         #render scene
         else: 
-            self.active_scene.render(self.cam)
-            self.active_scene._render(self.cam)
+            self.active_scene.render()
+            self.active_scene._render()
         if self.show_collisions: self.__render_collisions()
         #update screen
         pygame.display.flip()
@@ -179,23 +179,22 @@ class _game:
         self.queue_del_coll = []
         self._update_coll = False
 
-    def set_scene(self, scene=None):
+    def _set_scene(self, scene=None):
         if self.active_scene is not None: self.active_scene.destroy()
         self._clear_all_collisions_()
-        self.active_scene = self.scenes.get(scene, None)
-        if self.active_scene: self.active_scene.on_change()
+        self.active_scene = scene
+        #if self.active_scene: self.active_scene.on_change()
 
 
 class Scene:
     def __init__(self, name):
         self.name = name
-        Game.scenes[name] = self
         self._objects = []
         self._render_queue = []
         self.queue_creation = []
         self.queue_del = []
-        Game.scenes[name] = self.__class__
-        Game.set_scene(name)
+        if name not in Game.scenes: Game.scenes[name] = self.__class__
+        Game._set_scene(self)
 
     def on_change(self): pass
 
@@ -204,13 +203,13 @@ class Scene:
         self.__handle_queue()
         for obj in self._objects: obj.update()
 
-    def render(self, cam): pass #user defined
-    def _render(self, cam): #built in method
+    def render(self): pass #user defined
+    def _render(self): #built in method
         #update render queue based on global objects
         _length = len(self._objects)+len(Game.objects)
         if _length != len(self._render_queue): self.__update_render_queue()
         #render
-        for obj in self._render_queue: obj.render(cam)
+        for obj in self._render_queue: obj.render()
 
     def _queue_add(self, obj): self.queue_creation.append(obj)
     def _queue_remove(self, obj): self.queue_del.append(obj)

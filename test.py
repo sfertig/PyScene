@@ -1,4 +1,4 @@
-from src import *
+from src.PyScene import *
 import pygame
 
 
@@ -15,7 +15,16 @@ class player(GameObj):
         self.pos += (Keys.get_vector(Keys.a, Keys.d, Keys.w, Keys.s, False)*150)*Game.dt
         self.anim.pos = self.pos #positions stay linked
 
-player()
+class Test(Scene):
+    def __init__(self):
+        super().__init__("Test")
+        player()
+
+Test()
+
+Game.Tick()
+print(Game.objects)
+print(Game.active_scene._objects)
 
 Game.Run()
 

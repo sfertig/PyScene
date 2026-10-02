@@ -16,6 +16,6 @@ class GameObj: #this will be the base class of every game obj
         else: Game.queue_creation.append(self) #if obj is just global anyway
 
     def update(self): pass
-    def render(self, cam): pass
+    def render(self): pass
     def destroy(self): Game._queue_remove(self)
 
