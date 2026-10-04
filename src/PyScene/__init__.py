@@ -1,6 +1,6 @@
 #imports
 "PyScene is a custom python + pygame framework / engine developed to streamline 2d game development."
-"Version: 1.0.6"
+"Version: 1.0.7"
 
 from .Game import Game, Scene, handle_collision
 from .Math import *
@@ -26,6 +26,10 @@ __all__ = [
     "Line",
     "Text",
     "Image",
+    "Timer",
+
+    "Animation",
+    "AnimationManager",
 
     "StaticCollisionRect",
     "DynamicCollisionRect",

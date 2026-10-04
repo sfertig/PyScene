@@ -15,6 +15,8 @@ class GameObj: #this will be the base class of every game obj
         if not Global: Game._queue_add(self)
         else: Game.queue_creation.append(self) #if obj is just global anyway
 
+        self._global = Global
+
     def update(self): pass
     def render(self): pass
     def destroy(self): Game._queue_remove(self)

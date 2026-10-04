@@ -63,7 +63,7 @@ class Animation(GameObj):
             self.images[i] = pygame.transform.flip(self.images[i], True, False)
 
     def copy(self):
-        return Animation(self.image, self.size, self.fps, self.loop)
+        return Animation(self.image, self.size, self.fps, self.loop, self.pos, self.z_index, self.active, self.visible, self.offset, self._global)
     def render(self):
         if not self.visible: return
         Game.cam.draw_image(self.get_image(), self.pos, self.offset)
@@ -74,7 +74,7 @@ class AnimationManager(GameObj):
         self.animations = animations
         self.current_anim = current_anim
 
-        for anim in self.animations:
+        for anim in self.animations.values():
             anim.destroy() #remove from global or scene calls
 
     def new_anim(self, name, anim):

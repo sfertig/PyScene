@@ -96,7 +96,7 @@ class _game:
     def __update(self):
         self.click = False
         self.dt = self.clock.tick(self.fps)/1000.0
-        self.events = pygame.event.get()
+        self.events = pygame.event.get().copy()
 
         for obj in self.dynamic_col: obj.update()
         
