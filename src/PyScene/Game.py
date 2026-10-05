@@ -56,6 +56,9 @@ class _game:
         self.scenes = {}
         self.id = 0
 
+        #other flags
+        self.always_global = False
+
 
     def _queue_add(self, obj): 
         if self.active_scene is None: self.queue_creation.append(obj)

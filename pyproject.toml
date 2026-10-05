@@ -3,11 +3,11 @@ requires = ["hatchling >= 1.26"]
 build-backend = "hatchling.build"
 [project]
 name = "PyScene"
-version = "1.0.7"
+version = "1.0.8"
 authors = [
   { name="Sam Fertig", email="sfertig007@gmail.com" },
 ]
-description = "A small example package"
+description = "A python and pygame Game Engine"
 readme = "README.md"
 requires-python = ">=3.9"
 classifiers = [

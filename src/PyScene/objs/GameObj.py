@@ -12,6 +12,7 @@ class GameObj: #this will be the base class of every game obj
         self._id = Game._get_id()
 
         #add to creation
+        if Game.always_global: Global = True
         if not Global: Game._queue_add(self)
         else: Game.queue_creation.append(self) #if obj is just global anyway
 
