@@ -35,8 +35,9 @@ class Text(GameObj):
         self.rect = self.surface.get_rect(**{self.align: self.pos})
 
     def render(self):
-        if not self.visible: return
         Game.cam.draw_text(self.surface, self.rect, self.offset)
+    def render_to(self, surface):
+        surface.blit(self.surface, self.rect)
 
 class Image(GameObj):
     def __init__(self, image, pos=Vector2D(0, 0), z_index=0, active=True, visible=True, offset=True, Global=False):
@@ -45,6 +46,7 @@ class Image(GameObj):
         self.offset = offset
 
     def render(self):
-        if not self.visible: return
         Game.cam.draw_image(self.image, self.pos, self.offset)
+    def render_to(self, surface):
+        surface.blit(self.image, self.pos.to_int())
 

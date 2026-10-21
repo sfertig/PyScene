@@ -137,7 +137,8 @@ class _game:
         if _clear: self.screen.fill(self.bg)
         #render call
         if self.active_scene is None: 
-            for obj in self.render_queue: obj.render()
+            for obj in self.render_queue: 
+                if obj.visible: obj.render()
         #render scene
         else: 
             self.active_scene.render()
@@ -212,7 +213,8 @@ class Scene:
         _length = len(self._objects)+len(Game.objects)
         if _length != len(self._render_queue): self.__update_render_queue()
         #render
-        for obj in self._render_queue: obj.render()
+        for obj in self._render_queue: 
+            if obj.visible: obj.render()
 
     def _queue_add(self, obj): self.queue_creation.append(obj)
     def _queue_remove(self, obj): self.queue_del.append(obj)

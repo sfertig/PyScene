@@ -80,9 +80,11 @@ class _assets:
         if sWidth is not None and sHeight is not None:
             image = pygame.transform.scale(image, (sWidth, sHeight))
         self.images[name] = image.convert()
+        return self.images[name]
 
     def new_font(self, name, path, size):
         self.fonts[name] = pygame.font.Font(path, size)
+        return self.fonts[name]
 
     def new_animation(self, name, image, size=16, fps=3, loop=True, rect=None, pos=Vector2D(0, 0), z_index=0, active=True, visible=True, offset=True, Global=False):
         m = image
@@ -94,10 +96,11 @@ class _assets:
         #create image
         self.new_image(name, path, rect, scale, colorKey, sWidth, sHeight)
         #create animation
-        self.new_animation(name, self.images[name], size*scale, fps, loop, pos, z_index, active, visible, offset, Global)
+        return self.new_animation(name, self.images[name], size*scale, fps, loop, pos, z_index, active, visible, offset, Global)
 
     def new_sound(self, name, path):
         self.sounds[name] = pygame.mixer.Sound(path)
+        return self.sounds[name]
 
     def new_tileset(self, path, name, width=16, height=16, scale=1.0, colorkey=None):
         image = pygame.image.load(path).convert_alpha()
@@ -108,6 +111,7 @@ class _assets:
         data, cache = load_tileset(image, width*scale, height*scale)
         self.tilesets[name] = data
         self._tileset_cache_data[name] = cache
+        return self.tilesets[name]
 
     #getters
     def get_image(self, name):
@@ -139,8 +143,6 @@ class _assets:
             return self.tilesets[name]
         else:
             return None
-
-    
 
 Assets = _assets()
 

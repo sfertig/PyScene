@@ -57,16 +57,19 @@ class Animation(GameObj):
     def flip_v(self):
         for i in range(len(self.images)):
             self.images[i] = pygame.transform.flip(self.images[i], False, True)
+        return self
 
     def flip_h(self):
         for i in range(len(self.images)):
             self.images[i] = pygame.transform.flip(self.images[i], True, False)
+        return self
 
     def copy(self):
         return Animation(self.image, self.size, self.fps, self.loop, self.pos, self.z_index, self.active, self.visible, self.offset, self._global)
     def render(self):
-        if not self.visible: return
         Game.cam.draw_image(self.get_image(), self.pos, self.offset)
+    def render_to(self, screen):
+        screen.blit(self.get_image(), self.pos.to_int())
 
 class AnimationManager(GameObj):
     def __init__(self, animations: dict[str, Animation], current_anim=None, z_index=0, active=True, visible=True, offset=True, Global=False):
@@ -101,7 +104,7 @@ class AnimationManager(GameObj):
     def update(self):
         if self.current_anim is None and self.current_anim in self.animations:
             return
-        self.animations[self.current_anim].update(Game.dt)
+        self.animations[self.current_anim].update()
     def get_image(self) -> pygame.Surface:
         if self.current_anim is None and self.current_anim in self.animations:
             return
@@ -112,5 +115,6 @@ class AnimationManager(GameObj):
         return self.animations[self.current_anim]
 
     def render(self):
-        if not self.visible: return
         self.get_animation().render()
+    def render_to(self, screen):
+        self.get_animation().render_to(screen)
