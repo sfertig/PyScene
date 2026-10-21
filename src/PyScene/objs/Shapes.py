@@ -19,6 +19,9 @@ class Rect(GameObj):
     def render(self):
         Game.cam.draw_rect(self.rect, self.color, self.width, self.offset)
 
+    def render_to(self, screen):
+        pygame.draw.rect(screen, self.color, self.rect, self.width)
+
 class Circle(GameObj):
     def __init__(self, x, y, r, color, z_index=0, width=0, active=True, visible=True, offset=True, Global=False):
         super().__init__(Vector2D(x, y), z_index, active, visible, Global)
@@ -30,6 +33,9 @@ class Circle(GameObj):
     def render(self):
         Game.cam.draw_circle(self.pos, self.radius, self.color, self.width, self.offset)
 
+    def render_to(self, screen):
+        pygame.draw.circle(screen, self.color, self.pos.to_int(), self.radius, self.width)
+
 class Line(GameObj):
     def __init__(self, x1, y1, x2, y2, color, z_index=0, width=1, active=True, visible=True, offset=True, Global=False):
         super().__init__(Vector2D(x1, y1), z_index, active, visible, Global)
@@ -40,3 +46,5 @@ class Line(GameObj):
 
     def render(self): 
         Game.cam.draw_line(self.pos, self.end, self.color, self.width, self.offset)
+    def render_to(self, screen):
+        pygame.draw.line(screen, self.color, self.pos.to_int(), self.end.to_int(), self.width)

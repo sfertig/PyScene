@@ -30,9 +30,9 @@ class Text(GameObj):
             self.text = new_text
             self._update_surface()
 
-    def set_pos(self, new_pos):
+    def set_pos(self, new_pos: Vector2D):
         self.pos = new_pos
-        self.rect = self.surface.get_rect(**{self.align: self.pos})
+        self.rect = self.surface.get_rect(**{self.align: self.pos.to_int()})
 
     def render(self):
         Game.cam.draw_text(self.surface, self.rect, self.offset)
