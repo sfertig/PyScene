@@ -1,5 +1,6 @@
 import pygame
 import os
+import json
 
 from ..Game import Game, Scene
 from ..utils import SubScreen
@@ -42,6 +43,10 @@ class FileWin(GameObj):
     def update(self):
         for file in self.files:
             file.update(self.subscreen)
+        for file in self.files:
+            if file.RESET:
+                self.files.clear()
+                self.__load()
         #using mouse wheel to scroll through files, or arrow keys
         change = 0
         for event in Game.events:
@@ -69,6 +74,8 @@ class FileDefined():
         self.w = 3
         self.hovered = False
         self.selected = False
+
+        self.RESET = False
 
         self.options: FileOptions = None
 
@@ -107,6 +114,19 @@ class FileDefined():
                     os.rename(f".pyscene/tilemaps/{old}.json", f".pyscene/tilemaps/{new}.json")
                 elif self.options.DUPE:
                     self.options.DUPE = False
+                    self.RESET = True
+                    #duplicate file
+                    with open(f".pyscene/tilemaps/{self.name}.json", "r") as f:
+                        data = json.load(f)
+                    with open(f".pyscene/tilemaps/{self.name}_copy.json", "w") as f:
+                        json.dump(data, f)
+                    self.options._destroy()
+                elif self.options.DEL:
+                    self.options.DEL = False
+                    self.RESET = True
+                    #delete file
+                    os.remove(f".pyscene/tilemaps/{self.name}.json")
+                    self.options._destroy()
 
 
     def render(self, screen):
@@ -133,6 +153,16 @@ class FileOptions(GameObj):
         self.dupeWidth = 2
         self.dupeText = Text(pygame.font.Font(None, 25), "Duplicate", (141, 144, 148), Vector2D(self.dupeRect.centerx, self.dupeRect.centery), "center", 1, visible=False)
         self.DUPE = False
+        self.dupeLine = Line(5, 150, self.sub.screen.get_rect().width-10, 150, (0, 0, 0), 1, visible=False)
+        #del
+        self.delRect = pygame.Rect(10, 160, self.sub.screen.get_rect().width-20, 30)
+        self.delWidth = 2
+        self.delText = Text(pygame.font.Font(None, 25), "Delete", (141, 144, 148), Vector2D(self.delRect.centerx, self.delRect.centery), "center", 1, visible=False)
+        self.DEL = False
+        self.DELCHECK = False
+        self.delCnf_rect = pygame.Rect(30, 200, self.sub.screen.get_rect().width-60, 30)
+        self.delCnf_text = Text(pygame.font.Font(None, 25), "Confirm", (141, 144, 148), Vector2D(self.delCnf_rect.centerx, self.delCnf_rect.centery), "center", 1, visible=False)
+        self.delDnf_width = 2
 
     def update(self):
         #rename
@@ -158,7 +188,9 @@ class FileOptions(GameObj):
                         if len(text) > 15: continue
                         text += event.unicode
             self.renameName.set_text(text)
-            if done: self.RENAME = True
+            if done: 
+                self.RENAME = True
+                self.renameWidth = 2
         #dupe
         mpos = self.sub.local_mouse_pos().to_int()
         if self.dupeRect.collidepoint(mpos):
@@ -167,6 +199,27 @@ class FileOptions(GameObj):
             self.dupeWidth = 2
         if self.dupeWidth == 5 and Game.click:
             self.DUPE = True
+
+        #del
+        mpos = self.sub.local_mouse_pos().to_int()
+        if self.delRect.collidepoint(mpos):
+            self.delWidth = 5
+        else:
+            self.delWidth = 2
+        if self.delWidth == 5 and Game.click:
+            self.DELCHECK = True
+            return
+
+        if self.DELCHECK:
+            mpos = self.sub.local_mouse_pos().to_int()
+            if self.delCnf_rect.collidepoint(mpos):
+                self.delDnf_width = 5
+            else:
+                self.delDnf_width = 2
+            if self.delDnf_width == 5 and Game.click:
+                self.DEL = True
+            elif Keys.is_pressed(Keys.escape) or Game.click:
+                self.DELCHECK = False
 
     def render(self):
         self.sub.clear()
@@ -181,6 +234,14 @@ class FileOptions(GameObj):
 
         pygame.draw.rect(self.sub.screen, (0, 0, 0), self.dupeRect, self.dupeWidth)
         self.dupeText.render_to(self.sub.screen)
+        self.dupeLine.render_to(self.sub.screen)
+
+        pygame.draw.rect(self.sub.screen, (0, 0, 0), self.delRect, self.delWidth)
+        self.delText.render_to(self.sub.screen)
+
+        if self.DELCHECK:
+            pygame.draw.rect(self.sub.screen, (173, 103, 85), self.delCnf_rect, self.delDnf_width)
+            self.delCnf_text.render_to(self.sub.screen)
 
         self.sub.render()
 
@@ -189,6 +250,11 @@ class FileOptions(GameObj):
         self.name.destroy()
         self.line.destroy()
         self.renameText.destroy()
+        self.dupeText.destroy()
+        self.renameLine.destroy()
+        self.dupeLine.destroy()
+        self.delText.destroy()
+        self.delCnf_text.destroy()
 
 
 
