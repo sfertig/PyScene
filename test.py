@@ -19,9 +19,10 @@ Game.cam.pos.y = -Game.height/2
 Player()
 
 Assets.new_tileset("tests/tileset.png", "tileset")
-t = Tilemap(Assets.get_tileset("tileset"), 16, -1)
+t = Tilemap("test", Assets.get_tileset("tileset"), 16, -1)
 
-t.tilemap[(0, 0)] = (1, 0)
-t.tilemap[(0, 1)] = (1, 1)
+#t.tilemap[(0, 0)] = (1, 0)
+#t.tilemap[(0, 1)] = (1, 1)
+#t.dirty = True
 
 Game.Run(True)

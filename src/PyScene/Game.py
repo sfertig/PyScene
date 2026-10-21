@@ -1,5 +1,6 @@
 import pygame
 import sys
+import os
 
 from .Keys import Keys
 from .Math import Vector2D
@@ -58,6 +59,13 @@ class _game:
 
         #other flags
         self.always_global = False
+
+        self.__check_dir_files()
+
+    def __check_dir_files(self): #check and create dir and files
+        if os.path.exists(".pyscene"): return
+        os.mkdir(".pyscene")
+        os.mkdir(".pyscene/tilemaps")
 
 
     def _queue_add(self, obj): 
