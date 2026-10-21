@@ -14,9 +14,9 @@ def main():
     
     if command == "manager":
         # Import and launch the PyGame GUI manager
-        #from PyScene.tools.manager_gui import launch_manager
-        #launch_manager()
-        pass
+        from PyScene.tools.manager_gui import ManagerGUI
+        ManagerGUI()
+        
     else:
         print(f"Unknown PyScene command: '{command}'")
 
