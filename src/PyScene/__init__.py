@@ -27,6 +27,7 @@ __all__ = [
     "Text",
     "Image",
     "Timer",
+    "Tilemap",
 
     "Animation",
     "AnimationManager",

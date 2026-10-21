@@ -4,7 +4,7 @@ from ..Math import Vector2D
 
 
 class SubScreen:
-    def __init__(self, x, y, w, h, bgColor: None, displaySurface: pygame.Surface = None, parent=None):
+    def __init__(self, x, y, w, h, bgColor = None, displaySurface: pygame.Surface = None, parent=None):
         self.pos = Vector2D(x, y)
         self.dim = Vector2D(w, h)
         self.color = bgColor

@@ -4,27 +4,24 @@ import pygame
 
 Game.init(640, 360, "Test - 01", "darkblue", fullscreen=False)
 
-class player(GameObj):
+class Player(GameObj):
     def __init__(self):
         super().__init__(Vector2D(0, 0), 0)
-        #create animation
-        Assets.new_anim_nIMG("player", 8, 2, "tests/pause.png", (0, 0, 16, 8), colorKey=None, scale=3.0)
-        self.anim = Assets.get_animation("player")
+        self.rect = Rect(0, 0, 16, 16, "green")
 
     def update(self):
-        self.pos += (Keys.get_vector(Keys.a, Keys.d, Keys.w, Keys.s, False)*150)*Game.dt
-        self.anim.pos = self.pos #positions stay linked
+        self.vel = (Keys.get_vector(Keys.a, Keys.d, Keys.w, Keys.s, False)*150)*Game.dt
+        self.pos += self.vel
+        self.rect.pos = self.pos
 
-class Test(Scene):
-    def __init__(self):
-        super().__init__("Test")
-        player()
+Game.cam.pos.x = -Game.width/2
+Game.cam.pos.y = -Game.height/2
+Player()
 
-Test()
+Assets.new_tileset("tests/tileset.png", "tileset")
+t = Tilemap(Assets.get_tileset("tileset"), 16, -1)
 
-Game.Tick()
-print(Game.objects)
-print(Game.active_scene._objects)
+t.tilemap[(0, 0)] = (1, 0)
+t.tilemap[(0, 1)] = (1, 1)
 
-Game.Run()
-
+Game.Run(True)
