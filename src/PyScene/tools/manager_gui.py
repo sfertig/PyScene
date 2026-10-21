@@ -105,6 +105,8 @@ class FileDefined():
                     self.options.name.set_text(f"Name: {new}")
                     #rename file
                     os.rename(f".pyscene/tilemaps/{old}.json", f".pyscene/tilemaps/{new}.json")
+                elif self.options.DUPE:
+                    self.options.DUPE = False
 
 
     def render(self, screen):
@@ -125,6 +127,12 @@ class FileOptions(GameObj):
         self.renameWidth = 2
         self.renameName = Text(pygame.font.Font(None, 25), "", (141, 144, 148), Vector2D(self.renameRect.centerx, self.renameRect.centery), "center", 1, visible=False)
         self.RENAME = False
+        self.renameLine = Line(5, 100, self.sub.screen.get_rect().width-10, 100, (0, 0, 0), 1, visible=False)
+        #dupe
+        self.dupeRect = pygame.Rect(10, 110, self.sub.screen.get_rect().width-20, 30)
+        self.dupeWidth = 2
+        self.dupeText = Text(pygame.font.Font(None, 25), "Duplicate", (141, 144, 148), Vector2D(self.dupeRect.centerx, self.dupeRect.centery), "center", 1, visible=False)
+        self.DUPE = False
 
     def update(self):
         #rename
@@ -151,15 +159,28 @@ class FileOptions(GameObj):
                         text += event.unicode
             self.renameName.set_text(text)
             if done: self.RENAME = True
+        #dupe
+        mpos = self.sub.local_mouse_pos().to_int()
+        if self.dupeRect.collidepoint(mpos):
+            self.dupeWidth = 5
+        else:
+            self.dupeWidth = 2
+        if self.dupeWidth == 5 and Game.click:
+            self.DUPE = True
 
     def render(self):
         self.sub.clear()
 
         self.name.render_to(self.sub.screen)
         self.line.render_to(self.sub.screen)
+
         self.renameText.render_to(self.sub.screen)
         pygame.draw.rect(self.sub.screen, (0, 0, 0), self.renameRect, self.renameWidth)
         self.renameName.render_to(self.sub.screen)
+        self.renameLine.render_to(self.sub.screen)
+
+        pygame.draw.rect(self.sub.screen, (0, 0, 0), self.dupeRect, self.dupeWidth)
+        self.dupeText.render_to(self.sub.screen)
 
         self.sub.render()
 
