@@ -11,6 +11,9 @@ class GameObj: #this will be the base class of every game obj
         self.visible = visible
         self._id = Game._get_id()
 
+        self.__parent: GameObj = None
+        self.__children: list[GameObj] = []
+
         #add to creation
         if Game.always_global: Global = True
         if not Global: Game._queue_add(self)
@@ -18,7 +21,25 @@ class GameObj: #this will be the base class of every game obj
 
         self._global = Global
 
+    def child(self, obj): #obj is a game object 
+        self.__children.append(obj)
+        obj.parent(self)
+
+    def parent(self, obj):
+        # If we already have a parent, remove ourselves from its list first
+        if self.__parent and self in self.__parent.__children:
+            self.__parent.__children.remove(self)
+        self.__parent = obj
+
     def update(self): pass
     def render(self): pass
-    def destroy(self): Game._queue_remove(self)
+    def destroy(self): 
+        Game._queue_remove(self)
+        for i in self.__children:
+            i.destroy()
+
+        if self.__parent: self.__parent.__children.remove(self)
+
+        self.__children = []
+        self.__parent = None
 

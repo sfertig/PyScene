@@ -190,7 +190,20 @@ class _game:
         self.queue_creation_coll = []
         self.queue_del_coll = []
         self._update_coll = False
-
+    def clear_global_objs(self):
+        self.objects = []
+        self.queue_creation = []
+        self.queue_del = []
+        self.render_queue = []
+    def clear_scene_objs(self):
+        if self.active_scene is not None: 
+            self.active_scene._objects = []
+            self.active_scene.queue_creation = []
+            self.active_scene.queue_del = []
+            self.active_scene._render_queue = []
+    def clear_all_objs(self):
+        self.clear_global_objs()
+        self.clear_scene_objs()
     def _set_scene(self, scene=None):
         if self.active_scene is not None: self.active_scene.destroy()
         self._clear_all_collisions_()
