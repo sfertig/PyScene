@@ -24,6 +24,7 @@ class GameObj: #this will be the base class of every game obj
     def child(self, obj): #obj is a game object 
         self.__children.append(obj)
         obj.parent(self)
+        return obj #QOF
 
     def parent(self, obj):
         # If we already have a parent, remove ourselves from its list first

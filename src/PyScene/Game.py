@@ -72,7 +72,7 @@ class _game:
         if self.active_scene is None: self.queue_creation.append(obj)
         else: self.active_scene._queue_add(obj)
     def _queue_remove(self, obj): 
-        if obj in self.objects: self.objects.remove(obj)
+        if obj in self.objects: self.queue_del.remove(obj)
         else: self.active_scene._queue_remove(obj)
     def _get_id(self):
         self.id += 1
