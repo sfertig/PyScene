@@ -1,28 +1,26 @@
 from src.PyScene import *
-import pygame
-
 
 Game.init(640, 360, "Test - 01", "darkblue", fullscreen=False)
 
 class Player(GameObj):
-    def __init__(self):
-        super().__init__(Vector2D(0, 0), 0)
-        self.rect = Rect(0, 0, 16, 16, "green")
+    def __init__(self, x, y):
+        super().__init__(Vector2D(x, y)) #z index is 0 by default
+        self.rect = self.child(Rect(0, 0, 16, 16, "green")) #if player is destroyed so will the rect
 
     def update(self):
-        self.vel = (Keys.get_vector(Keys.a, Keys.d, Keys.w, Keys.s, False)*150)*Game.dt
-        self.pos += self.vel
+        self.pos += (Keys.get_vector(Keys.a, Keys.d, Keys.w, Keys.s, False)*150)*Game.dt
         self.rect.pos = self.pos
 
-Game.cam.pos.x = -Game.width/2
-Game.cam.pos.y = -Game.height/2
-Player()
+        #if Keys.is_pressed(Keys.enter): self.destroy()
 
-Assets.new_tileset("tests/tileset.png", "tileset")
-t = Tilemap("test", Assets.get_tileset("tileset"), 16, -1)
+class GameScene(Scene):
+    def __init__(self):
+        super().__init__("main")
+        Player(Game.width/2, Game.height/2) #this will live with scene, if scene changed player will be destroyed
 
-#t.tilemap[(0, 0)] = (1, 0)
-#t.tilemap[(0, 1)] = (1, 1)
-#t.dirty = True
+#Player(200, 200) This would be a global object and live through scene changes 
 
-Game.Run(True)
+GameScene() #calling this will create the scene and the super will set it as the current scene
+
+Game.Run(True) #or you can have a manual game loop with Game.Tick or using Game.update and Game.render
+#Also passing true will make the window close if ascape is presed

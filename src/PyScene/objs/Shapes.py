@@ -5,7 +5,7 @@ from ..Game import Game
 from .GameObj import GameObj
 
 class Rect(GameObj):
-    def __init__(self, x, y, w, h, color, z_index=0, width=0, active=True, visible=True, offset=True, Global=False):
+    def __init__(self, x, y, w, h, color, width=0, z_index=0, active=True, visible=True, offset=True, Global=False):
         super().__init__(Vector2D(x, y), z_index, active, visible, Global)
         self.dim = Vector2D(w, h)
         self.color = color
@@ -23,7 +23,7 @@ class Rect(GameObj):
         pygame.draw.rect(screen, self.color, self.rect, self.width)
 
 class Circle(GameObj):
-    def __init__(self, x, y, r, color, z_index=0, width=0, active=True, visible=True, offset=True, Global=False):
+    def __init__(self, x, y, r, color, width=0, z_index=0, active=True, visible=True, offset=True, Global=False):
         super().__init__(Vector2D(x, y), z_index, active, visible, Global)
         self.radius = r
         self.color = color
@@ -37,7 +37,7 @@ class Circle(GameObj):
         pygame.draw.circle(screen, self.color, self.pos.to_int(), self.radius, self.width)
 
 class Line(GameObj):
-    def __init__(self, x1, y1, x2, y2, color, z_index=0, width=1, active=True, visible=True, offset=True, Global=False):
+    def __init__(self, x1, y1, x2, y2, color, width=1, z_index=0, active=True, visible=True, offset=True, Global=False):
         super().__init__(Vector2D(x1, y1), z_index, active, visible, Global)
         self.end = Vector2D(x2, y2)
         self.color = color

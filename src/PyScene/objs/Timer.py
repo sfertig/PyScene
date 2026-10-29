@@ -3,7 +3,7 @@ from ..Game import Game
 from ..Math import Vector2D
 
 class Timer(GameObj):
-    def __init__(self, duration, active=True, Global=False):
+    def __init__(self, duration, z_index=0, active=True, visible=True, offset=True, Global=False):
         super().__init__(Vector2D(0, 0), 0, active, True, Global)
         self.duration = duration
         self.elapsed = 0.0

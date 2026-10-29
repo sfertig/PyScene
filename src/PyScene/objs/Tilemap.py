@@ -7,7 +7,7 @@ from ..Math import Vector2D
 from ..utils import SubScreen
 
 class Tilemap(GameObj):
-    def __init__(self, name, tileset, size=16, z_index=0, active=True, visible=True, Global=False ):
+    def __init__(self, name, tileset, size=16, z_index=0, active=True, visible=True, offset=True, Global=False ):
         super().__init__(Vector2D(0, 0), z_index, active, visible, Global)
         self.name = name
         self.tileset: dict[list[int], pygame.surface.Surface] = tileset

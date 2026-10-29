@@ -61,6 +61,17 @@ class _keys:
 
         self.shift = pygame.K_LSHIFT
 
+        #func
+        self.f1 = pygame.K_F1
+        self.f2 = pygame.K_F2
+        self.f3 = pygame.K_F3
+        self.f4 = pygame.K_F4
+        self.f5 = pygame.K_F5
+        self.f6 = pygame.K_F6
+        self.f7 = pygame.K_F7
+        self.f8 = pygame.K_F8
+        self.f9 = pygame.K_F9
+
         #mouse
         self.mouse_x, self.mouse_y = 0, 0
 

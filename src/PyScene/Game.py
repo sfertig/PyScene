@@ -12,7 +12,7 @@ class _game:
         pygame.init()
         pygame.font.init()
 
-    def init(self, width, height, title, bg="black", fps=60, fullscreen=False):
+    def init(self, width, height, title, bg="black", fps=60, fullscreen=False, _no_dir=False):
         self.__on = True
         self.width = width
         self.height = height
@@ -60,7 +60,7 @@ class _game:
         #other flags
         self.always_global = False
 
-        self.__check_dir_files()
+        if not _no_dir: self.__check_dir_files()
 
     def __check_dir_files(self): #check and create dir and files
         if os.path.exists(".pyscene"): return
@@ -72,7 +72,7 @@ class _game:
         if self.active_scene is None: self.queue_creation.append(obj)
         else: self.active_scene._queue_add(obj)
     def _queue_remove(self, obj): 
-        if obj in self.objects: self.queue_del.remove(obj)
+        if obj in self.objects: self.queue_del.append(obj)
         else: self.active_scene._queue_remove(obj)
     def _get_id(self):
         self.id += 1
@@ -128,7 +128,8 @@ class _game:
         self.__handle_queue()
 
         #update objs
-        for obj in self.objects: obj.update()
+        for obj in self.objects: 
+            if obj._active: obj.update()
         #update scene
         if self.active_scene is not None: 
             self.active_scene.update()
@@ -159,11 +160,10 @@ class _game:
         for coll in self.collisions:
             pygame.draw.rect(self.screen, "yellow", coll, 2)
 
-    def quit(self):
+    def quit(self, _quit_program=True):
         self.__on = False
         pygame.quit()
-        sys.exit()
-
+        if _quit_program: sys.exit()
     def set_title(self, title):
         self.title = title
         pygame.display.set_caption(self.title)
@@ -171,10 +171,10 @@ class _game:
     def Tick(self):
         self.update()
         self.render()
-    def Run(self, _esc=False):
+    def Run(self, _esc=False, _quit_program=True):
         while True:
             self.Tick()
-            if _esc and Keys.is_pressed(pygame.K_ESCAPE): self.quit()
+            if _esc and Keys.is_pressed(pygame.K_ESCAPE): self.quit(_quit_program)
     def full_reset(self):
         self.objects = []
         self.queue_creation = []
@@ -226,7 +226,8 @@ class Scene:
     def update(self): pass #user defined
     def _update(self): #built in method
         self.__handle_queue()
-        for obj in self._objects: obj.update()
+        for obj in self._objects: 
+            if obj._active: obj.update()
 
     def render(self): pass #user defined
     def _render(self): #built in method
