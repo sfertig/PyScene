@@ -21,7 +21,6 @@ class Timer(GameObj):
         return self.elapsed
 
     def update(self):
-        if not self.active: return
         if self.running:
             self.elapsed += Game.dt
             if self.elapsed >= self.duration:

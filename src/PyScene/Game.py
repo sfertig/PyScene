@@ -1,4 +1,5 @@
 import pygame
+from pygame._sdl2 import Window
 import sys
 import os
 
@@ -12,7 +13,7 @@ class _game:
         pygame.init()
         pygame.font.init()
 
-    def init(self, width, height, title, bg="black", fps=60, fullscreen=False, _no_dir=False):
+    def init(self, width, height, title, bg="black", fps=60, fullscreen=False, application=False, _no_dir=False):
         self.__on = True
         self.width = width
         self.height = height
@@ -30,8 +31,12 @@ class _game:
         self.optimize_static_colliders: bool = False
 
         #screen
-        if not fullscreen: self.screen = pygame.display.set_mode((self.width, self.height))
-        else: self.screen = pygame.display.set_mode((width, height), pygame.SCALED | pygame.FULLSCREEN)
+        if fullscreen: self.screen = pygame.display.set_mode((width, height), pygame.SCALED | pygame.FULLSCREEN)
+        elif application: 
+            self.screen = pygame.display.set_mode((width, height), pygame.SCALED | pygame.RESIZABLE)
+            sdl2_window = Window.from_display_module()
+            sdl2_window.maximize()
+        else: self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption(self.title)
 
         Keys._add_net(self) #to accsess events
@@ -85,6 +90,9 @@ class _game:
 
     def __update_render_queue(self): #update order of the renders based on z-index
         self.render_queue = sorted(self.objects, key=lambda obj: obj.z_index)
+
+    def _UpRenQ_(self):
+        self.__update_render_queue()
 
     def __handle_queue(self):
         for obj in self.queue_creation: self.objects.append(obj)

@@ -65,7 +65,7 @@ class Animation(GameObj):
         return self
 
     def copy(self):
-        return Animation(self.image, self.size, self.fps, self.loop, self.pos, self.z_index, self.active, self.visible, self.offset, self._global)
+        return Animation(self.image, self.size, self.fps, self.loop, self.pos, self.z_index, self._active, self.visible, self.offset, self._global)
     def render(self):
         Game.cam.draw_image(self.get_image(), self.pos, self.offset)
     def render_to(self, screen):

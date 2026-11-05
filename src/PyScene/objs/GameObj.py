@@ -26,6 +26,10 @@ class GameObj: #this will be the base class of every game obj
         obj.parent(self)
         return obj #QOF
 
+    def set_z_index(self, new_index):
+        self.z_index = new_index
+        Game._UpRenQ_()
+
     def parent(self, obj):
         # If we already have a parent, remove ourselves from its list first
         if self._parent and self in self._parent._children:
