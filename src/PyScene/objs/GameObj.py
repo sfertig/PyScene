@@ -37,7 +37,7 @@ class GameObj: #this will be the base class of every game obj
         self._parent = obj
 
     def update(self): pass
-    def render(self): pass
+    def render(self, screen): pass
     def destroy(self): 
         Game._queue_remove(self)
         for i in self._children:

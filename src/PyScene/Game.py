@@ -150,7 +150,7 @@ class _game:
         #render call
         if self.active_scene is None: 
             for obj in self.render_queue: 
-                if obj.visible: obj.render()
+                if obj.visible: obj.render(self.screen)
         #render scene
         else: 
             self.active_scene.render()
@@ -239,7 +239,7 @@ class Scene:
         if _length != len(self._render_queue): self.__update_render_queue()
         #render
         for obj in self._render_queue: 
-            if obj.visible: obj.render()
+            if obj.visible: obj.render(Game.screen)
 
     def _queue_add(self, obj): self.queue_creation.append(obj)
     def _queue_remove(self, obj): self.queue_del.append(obj)
@@ -266,31 +266,6 @@ class Camera:
     def __init__(self, game):
         self.pos = Vector2D(0, 0)
         self.game = game
-
-    #rendering helpers
-    def draw_rect(self, rect, color, width=0, offset=True):
-        r = rect.copy()
-        if offset: r.topleft = (r.x - self.pos.x, r.y - self.pos.y)
-        pygame.draw.rect(self.game.screen, color, r, width)
-    def draw_circle(self, pos, r, color, width=0, offset=True):
-        p = pos.copy()
-        if offset: p -= self.pos
-        pygame.draw.circle(self.game.screen, color, p.to_int(), r, width)
-    def draw_line(self, start, end, color, width=1, offset=True):
-        s = start.copy()
-        e = end.copy()
-        if offset:
-            s -= self.pos
-            e -= self.pos
-        pygame.draw.line(self.game.screen, color, s.to_int(), e.to_int(), width)
-    def draw_text(self, surface, rect, offset=True):
-        r = rect.copy()
-        if offset: r.topleft = (r.x - self.pos.x, r.y - self.pos.y)
-        self.game.screen.blit(surface, r)
-    def draw_image(self, image, pos, offset=True):
-        p = pos.copy()
-        if offset: p -= self.pos
-        self.game.screen.blit(image, p.to_int())
 
 def handle_collision(self, dim: Vector2D, Rect=None, ignore_self=True) -> dict:
     returns = {"on_floor": False, "on_wall": False}

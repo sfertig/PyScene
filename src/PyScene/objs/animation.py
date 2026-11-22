@@ -66,10 +66,11 @@ class Animation(GameObj):
 
     def copy(self):
         return Animation(self.image, self.size, self.fps, self.loop, self.pos, self.z_index, self._active, self.visible, self.offset, self._global)
-    def render(self):
-        Game.cam.draw_image(self.get_image(), self.pos, self.offset)
-    def render_to(self, screen):
-        screen.blit(self.get_image(), self.pos.to_int())
+    def render(self, screen):
+        p = self.pos.copy()
+        if self.offset: p -= self.pos
+        screen.blit(self.get_image(), p.to_int())
+
 
 class AnimationManager(GameObj):
     def __init__(self, animations: dict[str, Animation], current_anim=None, z_index=0, active=True, visible=True, offset=True, Global=False):
@@ -114,7 +115,5 @@ class AnimationManager(GameObj):
             return
         return self.animations[self.current_anim]
 
-    def render(self):
-        self.get_animation().render()
-    def render_to(self, screen):
-        self.get_animation().render_to(screen)
+    def render(self, screen):
+        self.get_animation().render(screen)
