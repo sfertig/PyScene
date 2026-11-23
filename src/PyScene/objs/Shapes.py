@@ -16,9 +16,9 @@ class Rect(GameObj):
     def update(self):
         if self.pos.to_int() != self.rect.topleft: self.rect.topleft = self.pos.to_int()
 
-    def render(self, screen):
+    def render(self, screen, cam):
         r = self.rect.copy()
-        if self.offset: r.topleft = (r.x - self.pos.x, r.y - self.pos.y)
+        if self.offset: r.topleft = (r.x - cam.x, r.y - cam.y)
         pygame.draw.rect(screen, self.color, r, self.width)
 
 
@@ -30,9 +30,9 @@ class Circle(GameObj):
         self.width = width
         self.offset = offset
 
-    def render(self, screen):
+    def render(self, screen, cam):
         p = self.pos.copy()
-        if self.offset: p -= self.pos
+        if self.offset: p -= cam
         pygame.draw.circle(screen, self.color, p.to_int(), self.r, self.width)
 
 class Line(GameObj):
@@ -43,10 +43,10 @@ class Line(GameObj):
         self.width = width
         self.offset = offset
 
-    def render(self, screen): 
+    def render(self, screen, cam): 
         s = self.pos.copy()
         e = self.end.copy()
         if self.offset:
-            s -= self.pos
-            e -= self.pos
+            s -= cam
+            e -= cam
         pygame.draw.line(screen, self.color, s.to_int(), e.to_int(), self.width)

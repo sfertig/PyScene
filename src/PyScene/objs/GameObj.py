@@ -7,7 +7,7 @@ class GameObj: #this will be the base class of every game obj
         self.pos: Vector2D = pos
         self.vel: Vector2D = Vector2D(0, 0)
         self.z_index = z_index
-        self._active = active
+        self.active = active
         self.visible = visible
         self._id = Game._get_id()
 
@@ -37,7 +37,7 @@ class GameObj: #this will be the base class of every game obj
         self._parent = obj
 
     def update(self): pass
-    def render(self, screen): pass
+    def render(self, screen, cam: Vector2D): pass
     def destroy(self): 
         Game._queue_remove(self)
         for i in self._children:

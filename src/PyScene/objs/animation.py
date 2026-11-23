@@ -66,9 +66,9 @@ class Animation(GameObj):
 
     def copy(self):
         return Animation(self.image, self.size, self.fps, self.loop, self.pos, self.z_index, self._active, self.visible, self.offset, self._global)
-    def render(self, screen):
+    def render(self, screen, cam):
         p = self.pos.copy()
-        if self.offset: p -= self.pos
+        if self.offset: p -= cam
         screen.blit(self.get_image(), p.to_int())
 
 
@@ -115,5 +115,5 @@ class AnimationManager(GameObj):
             return
         return self.animations[self.current_anim]
 
-    def render(self, screen):
-        self.get_animation().render(screen)
+    def render(self, screen, cam):
+        self.get_animation().render(screen, cam)

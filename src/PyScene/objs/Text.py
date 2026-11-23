@@ -53,9 +53,9 @@ class Text(GameObj):
         self.pos = new_pos
         self._apply_alignment()
 
-    def render(self, screen):
+    def render(self, screen, cam):
         r = self.rect.copy()
-        if self.offset: r.topleft = (r.x - self.pos.x, r.y - self.pos.y)
+        if self.offset: r.topleft = (r.x - cam.x, r.y - cam.y)
         screen.blit(self.surface, r)
         
 
@@ -66,9 +66,9 @@ class Image(GameObj):
         self.image = image
         self.offset = offset
 
-    def render(self, screen):
+    def render(self, screen, cam):
         p = self.pos.copy()
-        if self.offset: p -= self.pos
+        if self.offset: p -= cam
         screen.blit(self.image, p.to_int())
 
 

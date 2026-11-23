@@ -12,14 +12,13 @@ class _game:
         pygame.init()
         pygame.font.init()
 
-    def init(self, width, height, title, bg="black", fps=60, fullscreen=False, _no_dir=False):
+    def init(self, width, height, title, bg="black", fps=60, fullscreen=False, _no_dir=False, _screenCam=True):
         self.__on = True
         self.width = width
         self.height = height
         self.title = title
         self.bg = bg
         self.fps = fps
-        self.clock = pygame.time.Clock()
         self.dt = 0.0
         self.mouse_down = False
         self.click = False
@@ -30,9 +29,14 @@ class _game:
         self.optimize_static_colliders: bool = False
 
         #screen
-        if not fullscreen: self.screen = pygame.display.set_mode((self.width, self.height))
-        else: self.screen = pygame.display.set_mode((width, height), pygame.SCALED | pygame.FULLSCREEN)
-        pygame.display.set_caption(self.title)
+        if _screenCam:
+            if not fullscreen: self.screen = pygame.display.set_mode((self.width, self.height))
+            else: self.screen = pygame.display.set_mode((width, height), pygame.SCALED | pygame.FULLSCREEN)
+            pygame.display.set_caption(self.title)
+            self.clock = pygame.time.Clock()
+        else:
+            self.screen = None
+            self.cam = None
 
         Keys._add_net(self) #to accsess events
 
@@ -132,7 +136,7 @@ class _game:
 
         #update objs
         for obj in self.objects: 
-            if obj._active: obj.update()
+            if obj.active: obj.update()
         #update scene
         if self.active_scene is not None: 
             self.active_scene.update()
@@ -143,21 +147,21 @@ class _game:
 
     def clear_screen(self): self.screen.fill(self.bg)
 
-    def render(self, _clear=True):
+    def render(self, _clear=True, _render=True):
         if not self.__on: return
 
         if _clear: self.screen.fill(self.bg)
         #render call
         if self.active_scene is None: 
             for obj in self.render_queue: 
-                if obj.visible: obj.render(self.screen)
+                if obj.visible: obj.render(self.screen, self.cam.pos)
         #render scene
         else: 
             self.active_scene.render()
             self.active_scene._render()
         if self.show_collisions: self.__render_collisions()
         #update screen
-        pygame.display.flip()
+        if _render: pygame.display.flip()
 
     def __render_collisions(self):
         for coll in self.collisions:
@@ -230,7 +234,7 @@ class Scene:
     def _update(self): #built in method
         self.__handle_queue()
         for obj in self._objects: 
-            if obj._active: obj.update()
+            if obj.active: obj.update()
 
     def render(self): pass #user defined
     def _render(self): #built in method
@@ -239,7 +243,7 @@ class Scene:
         if _length != len(self._render_queue): self.__update_render_queue()
         #render
         for obj in self._render_queue: 
-            if obj.visible: obj.render(Game.screen)
+            if obj.visible: obj.render(Game.screen, Game.cam.pos)
 
     def _queue_add(self, obj): self.queue_creation.append(obj)
     def _queue_remove(self, obj): self.queue_del.append(obj)
